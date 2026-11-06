@@ -6,6 +6,38 @@ import { Alert, Btn } from '../components/ui';
 
 const input = 'mt-1 w-full rounded-md border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500';
 
+function GoogleButton({ busy, onClick }) {
+  return (
+    <button type="button" onClick={onClick} disabled={busy} className="auth-google-button">
+      <svg aria-hidden="true" viewBox="0 0 48 48" className="h-5 w-5">
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5Z" transform="translate(0 4)" />
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.75 7.18l7.73 6C44.43 37.94 46.98 31.7 46.98 24.55Z" />
+        <path fill="#FBBC05" d="M10.53 28.59a14.4 14.4 0 0 1 0-9.18l-7.98-6.19a23.95 23.95 0 0 0 0 21.56l7.98-6.19Z" transform="translate(0 4)" />
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.91-5.8l-7.73-6c-2.14 1.45-4.88 2.3-8.18 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48Z" transform="translate(0 -4)" />
+      </svg>
+      <span>{busy ? 'Connecting to Google…' : 'Continue with Google'}</span>
+    </button>
+  );
+}
+
+async function signInWithGoogle(setErr, setBusy) {
+  setErr('');
+  setBusy(true);
+  try {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/` },
+    });
+    if (error) {
+      setErr(error.message);
+      setBusy(false);
+    }
+  } catch (error) {
+    setErr(error instanceof Error ? error.message : 'Unable to start Google sign-in.');
+    setBusy(false);
+  }
+}
+
 function Shell({ title, children, footer }) {
   const { pathname } = useLocation();
   const transition = pathname === '/register' ? 'auth-enter-forward' : 'auth-enter-back';
@@ -44,6 +76,8 @@ export function Login() {
         <Alert>{err}</Alert>
         <Btn type="submit" disabled={busy} className="w-full">{busy ? 'Signing in…' : 'Sign in'}</Btn>
       </form>
+      <div className="auth-divider"><span>or</span></div>
+      <GoogleButton busy={busy} onClick={() => signInWithGoogle(setErr, setBusy)} />
     </Shell>
   );
 }
@@ -82,6 +116,8 @@ export function Register() {
         <Alert>{err}</Alert>
         <Btn type="submit" disabled={busy} className="w-full">{busy ? 'Creating…' : 'Create account'}</Btn>
       </form>
+      <div className="auth-divider"><span>or</span></div>
+      <GoogleButton busy={busy} onClick={() => signInWithGoogle(setErr, setBusy)} />
     </Shell>
   );
 }
