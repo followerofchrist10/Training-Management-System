@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, Navigate } from 'react-router-dom';
+import { Link, Navigate, useLocation } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { useAuth } from '../lib/auth';
 import { Alert, Btn } from '../components/ui';
@@ -7,12 +7,15 @@ import { Alert, Btn } from '../components/ui';
 const input = 'mt-1 w-full rounded-md border-slate-300 text-sm shadow-sm focus:border-slate-500 focus:ring-slate-500';
 
 function Shell({ title, children, footer }) {
+  const { pathname } = useLocation();
+  const transition = pathname === '/register' ? 'auth-enter-forward' : 'auth-enter-back';
+
   return (
-    <div className="flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-sm">
-        <p className="text-sm font-semibold uppercase tracking-wide text-slate-500">Training Center</p>
+    <div className="auth-shell flex min-h-screen items-center justify-center px-4">
+      <div className={`auth-content w-full max-w-sm ${transition}`}>
+        <p className="auth-brand text-sm font-semibold uppercase tracking-wide text-slate-500">Training Center</p>
         <h1 className="mt-1 text-2xl font-semibold text-slate-900">{title}</h1>
-        <div className="mt-6 rounded-lg border border-slate-200 bg-white p-5">{children}</div>
+        <div className="auth-panel mt-6 rounded-lg border border-slate-200 bg-white p-5">{children}</div>
         <p className="mt-4 text-center text-sm text-slate-600">{footer}</p>
       </div>
     </div>

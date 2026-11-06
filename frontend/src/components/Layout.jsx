@@ -25,7 +25,7 @@ export default function Layout() {
   const link = ({ isActive }) => `block rounded-md px-3 py-2 text-sm font-medium ${isActive ? 'bg-slate-900 text-white' : 'text-slate-700 hover:bg-slate-100'}`;
 
   const nav = (
-    <nav className="space-y-1" aria-label="Main">
+    <nav className="app-navigation space-y-1" aria-label="Main">
       {NAV[profile.role].map(([to, label]) => <NavLink key={to} to={to} end={to === '/'} className={link}>{label}</NavLink>)}
       <NavLink to="/notifications" className={link}>
         Notifications {unread > 0 && <span className="ml-1 rounded-full bg-rose-600 px-1.5 py-0.5 text-xs text-white">{unread}</span>}
@@ -34,18 +34,29 @@ export default function Layout() {
   );
 
   return (
-    <div className="min-h-screen md:flex">
-      <aside className="hidden w-60 shrink-0 border-r border-slate-200 bg-white p-4 md:block">
-        <p className="mb-4 px-3 text-sm font-semibold uppercase tracking-wide text-slate-500">Training Center</p>
+    <div className="app-shell min-h-screen md:flex">
+      <aside className="app-sidebar hidden w-60 shrink-0 border-r border-slate-200 bg-white p-4 md:block">
+        <div className="app-brand">
+          <span className="app-brand-mark" aria-hidden="true">T</span>
+          <div>
+            <p className="app-brand-name">TRAINING<span>OS</span></p>
+            <p className="app-brand-caption">LEARNING, IN MOTION</p>
+          </div>
+        </div>
+        <p className="app-nav-label">Workspace</p>
         {nav}
+        <div className="app-sidebar-footer">
+          <span className="app-status-dot" />
+          <span>All systems operational</span>
+        </div>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
-        <header className="flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
+        <header className="app-topbar flex items-center justify-between border-b border-slate-200 bg-white px-4 py-3">
           <button className="rounded-md p-2 text-slate-700 ring-1 ring-inset ring-slate-300 md:hidden" onClick={() => setOpen(true)} aria-label="Open menu">☰</button>
-          <span className="hidden text-sm text-slate-500 md:block capitalize">{profile.role}</span>
+          <span className="app-role hidden text-sm text-slate-500 md:block capitalize">{profile.role}</span>
           <div className="flex items-center gap-3 text-sm">
-            <span className="max-w-[10rem] truncate text-slate-700">{profile.full_name}</span>
+            <span className="app-user-name max-w-[10rem] truncate text-slate-700">{profile.full_name}</span>
             <button onClick={signOut} className="rounded-md px-2.5 py-1.5 font-medium text-slate-700 ring-1 ring-inset ring-slate-300 hover:bg-slate-50">Sign out</button>
           </div>
         </header>
@@ -53,11 +64,21 @@ export default function Layout() {
         {open && (
           <div className="fixed inset-0 z-40 md:hidden" role="dialog" aria-modal="true">
             <div className="absolute inset-0 bg-slate-900/50" onClick={() => setOpen(false)} />
-            <div className="absolute inset-y-0 left-0 w-64 bg-white p-4 shadow-xl">{nav}</div>
+            <div className="app-mobile-nav absolute inset-y-0 left-0 w-64 bg-white p-4 shadow-xl">
+              <div className="app-brand">
+                <span className="app-brand-mark" aria-hidden="true">T</span>
+                <div>
+                  <p className="app-brand-name">TRAINING<span>OS</span></p>
+                  <p className="app-brand-caption">LEARNING, IN MOTION</p>
+                </div>
+              </div>
+              <p className="app-nav-label">Workspace</p>
+              {nav}
+            </div>
           </div>
         )}
 
-        <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6"><Outlet /></main>
+        <main className="app-main mx-auto w-full max-w-6xl flex-1 px-4 py-6 sm:px-6"><Outlet /></main>
       </div>
     </div>
   );
