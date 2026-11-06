@@ -26,7 +26,7 @@ export const corsMw = cors({
     if (!origin) return cb(null, false);            // non-browser clients: no CORS headers
     return cb(null, origins.includes(origin));      // exact match only
   },
-  methods: ['GET', 'POST', 'PATCH', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
   allowedHeaders: ['Authorization', 'Content-Type'],
   maxAge: 600,
 });
